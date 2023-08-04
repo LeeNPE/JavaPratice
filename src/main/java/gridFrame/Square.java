@@ -1,6 +1,6 @@
 package gridFrame;
 
-public abstract class Square implements Locatable{
+public class Square implements Locatable{
     private int x, y;
 
     @Override
@@ -15,4 +15,9 @@ public abstract class Square implements Locatable{
 
     @Override
     public char getSymbol() { return '@'; }
+
+    @Override
+    public Locatable newObj() {
+        return new Square();
+    }
 }

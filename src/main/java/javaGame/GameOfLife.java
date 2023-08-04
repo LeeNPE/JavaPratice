@@ -1,3 +1,4 @@
+/*
 package javaGame;
 
 import gridFrame.*;
@@ -89,3 +90,4 @@ class Cell extends Square{
         return (isAlive) ? '*' : '-';
     }
 }
+*/

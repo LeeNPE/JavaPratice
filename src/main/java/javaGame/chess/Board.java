@@ -1,17 +1,14 @@
 package javaGame.chess;
 
 public class Board {
-
-
     private Piece[] pieces;
     public final int RANK_SIZE = 8; // 가로
     public final int FILE_SIZE = 8; // 세로
 
     public Board(){
         pieces = new Piece[ RANK_SIZE * FILE_SIZE ];
-
-        for (Piece temp : pieces) {
-            temp = new Empty();
+        for (int i = 0; i < pieces.length ; i++) {
+            pieces[i] = new Empty();
         }
     }
 
@@ -43,7 +40,7 @@ public class Board {
         Piece piece;
         for (int i = 0 ; i < RANK_SIZE ; i++) {
             for (int j = 0 ; j < FILE_SIZE ; j++) {
-
+                //System.out.println("i = " + i + ", j = " + j + ", index = " + toIndex(i, j) );
                 piece = pieces[toIndex(i, j)];
                 System.out.print(piece.getSymbol());
             }
@@ -52,18 +49,16 @@ public class Board {
         }
     }
 
-    private int toIndex(int rank, int file) {
-        if (rank >= RANK_SIZE) rank = RANK_SIZE-1 ;
-        if (file >= FILE_SIZE) file = FILE_SIZE-1 ;
+    int toIndex(int rank, int file) {
+        if (rank >= RANK_SIZE || rank < 0) throw new RuntimeException() ;
+        if (file >= FILE_SIZE || file < 0) throw new RuntimeException();
         return rank * FILE_SIZE + file;
     }
 
     public int toRank (int index) {
-
-        return index % FILE_SIZE;
+        return index / FILE_SIZE;
     }
     public int toFile (int index) {
-        
-        return index / FILE_SIZE;
+        return index % FILE_SIZE;
     }
 }

@@ -18,6 +18,6 @@ public class Rook extends Piece {
 
     @Override
     public char getSymbol() {
-        return 0;
+        return 'R';
     }
 }

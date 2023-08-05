@@ -9,54 +9,58 @@ public class Rule {
         this.board = board;
     }
 
-    void movePiece(int originRank, int originFile, int movedRank, int movedFile) {
-        if( canMove(originRank, originFile, movedRank, movedFile) ){
-
-            board.setPiece(board.getPiece(originRank, originFile), movedRank, movedFile);
-
-            board.setPiece(new Empty(), originRank, originFile);
-
+    void movePiece(int originLoc, int movedLoc) {
+        System.out.println("from " + originLoc+ ", to " + movedLoc);
+        if (canMove(originLoc, movedLoc)) {
+            board.setPiece(board.getPiece(originLoc), movedLoc);
+            board.setPiece(new Empty(), originLoc);
+        } else {
+            System.out.println("You can't move from" + board.toRank(originLoc) + ", " + board.toFile(originLoc)+
+                    " to " + board.toRank(movedLoc) + ", " + board.toFile(movedLoc));
         }
     }
 
-    boolean canMove(int originRank, int originFile, int movedRank, int movedFile) {
+    boolean canMove(int originLoc, int movedLoc) {
 
-        Piece piece = board.getPiece(originRank, originFile);
+        Piece piece = board.getPiece(originLoc);
 
-        int pieceRankDistance = Piece.GET_DISTANCE(originRank, movedRank);
-        int pieceFileDistance = Piece.GET_DISTANCE(originFile, movedFile);
+        int pieceRankDistance = Piece.GET_DISTANCE(board.toRank(originLoc), board.toRank(movedLoc));
+        int pieceFileDistance = Piece.GET_DISTANCE(board.toFile(originLoc), board.toFile(movedLoc));
 
-        // 절대적 핀이 걸려있는지 확인
-
-        return piece.isLegalMove (pieceRankDistance, pieceFileDistance)
-                && isMoveBlocked (originRank, originFile, movedRank, movedFile);
+        if (!piece.isLegalMove (pieceRankDistance, pieceFileDistance)) {
+            System.out.println("It is illegal move!");
+            return false;
+        }
+        else if (isMoveBlocked (originLoc, movedLoc)) {
+            System.out.println("Your piece is blocked by --");
+            return false;
+        }
+        return true;
     }
 
-    LinkedList<Piece> getThreatingPieces(int rank, int file) {
+    LinkedList<Piece> getThreatingPieces(int location) {
 
         LinkedList<Piece> threatingPieces = new LinkedList<Piece>();
 
-        for(int i = 0 ; i < board.RANK_SIZE ; i++) {
-            for (int j = 0 ; j < board.FILE_SIZE ; j++) {
+        for (int tempLoc = 0 ; tempLoc < board.getPieces().length ; tempLoc++) {
 
-                Piece temp = board.getPiece(i, j);
-                int tempRankDistance = Piece.GET_DISTANCE(i, rank);
-                int tempFileDistance = Piece.GET_DISTANCE(j, file);
+            Piece temp = board.getPiece(tempLoc);
 
-                if( temp.isLegalMove (tempRankDistance, tempFileDistance)
-                        && isMoveBlocked (i, j, rank, file) ) {
+            int rankDistance = Piece.GET_DISTANCE(board.toRank(tempLoc), board.toRank(location) );
+            int fileDistance = Piece.GET_DISTANCE(board.toFile(tempLoc), board.toFile(location) );
 
-                    threatingPieces.add(temp);
-                }
-            }
+            if( temp.isLegalMove (rankDistance, fileDistance)
+                    && !isMoveBlocked ( tempLoc, location ) )
+
+                threatingPieces.add(temp);
         }
 
         return threatingPieces;
     }
 
-    boolean isMoveBlocked(int originRank, int originFile, int movedRank, int movedFile) {
+    boolean isMoveBlocked(int orginLoc, int movedLoc) {
 
-        Piece movingPiece = board.getPiece(originRank, originFile);
+        Piece piece = board.getPiece( board.toRank(orginLoc), board.toFile(orginLoc) );
         // movingPiece와 도착지점 사이에 움직임을 가로막는 기물이 있는가?
         // 위의 내용 반환
         return false;

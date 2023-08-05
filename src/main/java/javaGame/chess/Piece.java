@@ -16,4 +16,10 @@ public abstract class Piece {
 
     public abstract char getSymbol();
 
+    @Override
+    public String toString() {
+        return "Piece{" +
+                "team=" + team + ", " + getClass().toString() +
+                '}';
+    }
 }

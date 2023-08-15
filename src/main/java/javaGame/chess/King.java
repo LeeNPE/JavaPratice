@@ -2,12 +2,12 @@ package javaGame.chess;
 
 public class King extends Piece{
 
-    King(Team team) {
-        super(team);
+    King(Team team, int location) {
+        super(team, location);
     }
 
     @Override
-    boolean isLegalMove(int rMoveDistance, int fMoveDistance) {
+    boolean  isCorrectPieceMove(int rMoveDistance, int fMoveDistance){
 
         boolean onPlace = (rMoveDistance == 0 && fMoveDistance == 0);
 

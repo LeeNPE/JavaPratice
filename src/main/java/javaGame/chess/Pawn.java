@@ -8,8 +8,8 @@ public class Pawn extends Piece{
 
     final int FIRST_MOVE_DISTANCE = 2;
 
-    Pawn(Team team) {
-        super(team);
+Pawn(Team team, int location) {
+        super(team, location);
 
         isFirst = true;
         if(team == Team.WHITE) {
@@ -20,11 +20,11 @@ public class Pawn extends Piece{
 
         moveDirection = 1;
 
-
     }
 
+
     @Override
-    boolean isLegalMove(int rMoveDistance, int fMoveDistance) {
+    boolean isCorrectPieceMove(int rMoveDistance, int fMoveDistance){
         if (fMoveDistance != 0) {
             System.out.println("your pawn run away from file = " + fMoveDistance);
             return false;

@@ -2,15 +2,15 @@ package javaGame.chess;
 
 public class Queen extends Piece{
 
-    Queen(Team team) {
-        super(team);
+    Queen(Team team, int location) {
+        super(team, location);
     }
 
     @Override
-    boolean isLegalMove(int rMoveDistance, int fMoveDistance) {
+    boolean isCorrectPieceMove(int rMoveDistance, int fMoveDistance){
 
-        boolean bishopMove =  new Bishop(team).isLegalMove(rMoveDistance, fMoveDistance);
-        boolean RookMove = new Rook(team).isLegalMove(rMoveDistance, fMoveDistance);
+        boolean bishopMove =  new Bishop(team, getLoc() ).isCorrectPieceMove(rMoveDistance, fMoveDistance);
+        boolean RookMove = new Rook(team, getLoc()).isCorrectPieceMove(rMoveDistance, fMoveDistance);
 
         return bishopMove || RookMove;
     }

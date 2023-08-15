@@ -8,41 +8,9 @@ public class Test {
         Scanner sc = new Scanner(System.in);
         Board board = new Board();
         Rule rule = new Rule(board);
-        board.setPiece(new Rook(Piece.Team.BLACK), 0);
-        board.setPiece(new Knight(Piece.Team.BLACK), 1);
-        board.setPiece(new Bishop(Piece.Team.BLACK), 2);
-        board.setPiece(new Queen(Piece.Team.BLACK), 3);
-        board.setPiece(new King(Piece.Team.BLACK), 4);
-        board.setPiece(new Bishop(Piece.Team.BLACK), 5);
-        board.setPiece(new Knight(Piece.Team.BLACK), 6);
-        board.setPiece(new Rook(Piece.Team.BLACK), 7);
-        board.setPiece(new Pawn(Piece.Team.BLACK), 8);
-        board.setPiece(new Pawn(Piece.Team.BLACK), 9);
-        board.setPiece(new Pawn(Piece.Team.BLACK), 10);
-        board.setPiece(new Pawn(Piece.Team.BLACK), 11);
-        board.setPiece(new Pawn(Piece.Team.BLACK), 12);
-        board.setPiece(new Pawn(Piece.Team.BLACK), 13);
-        board.setPiece(new Pawn(Piece.Team.BLACK), 14);
-        board.setPiece(new Pawn(Piece.Team.BLACK), 15);
+        ChessProgressManager cpm = new ChessProgressManager(board, rule, sc);
 
-
-        board.setPiece(new Rook(Piece.Team.WHITE), 63);
-        board.setPiece(new Knight(Piece.Team.WHITE), 62);
-        board.setPiece(new Bishop(Piece.Team.WHITE), 61);
-        board.setPiece(new Queen(Piece.Team.WHITE), 60);
-        board.setPiece(new King(Piece.Team.WHITE), 59);
-        board.setPiece(new Bishop(Piece.Team.WHITE), 58);
-        board.setPiece(new Knight(Piece.Team.WHITE), 57);
-        board.setPiece(new Rook(Piece.Team.WHITE), 56);
-        board.setPiece(new Pawn(Piece.Team.WHITE), 55);
-        board.setPiece(new Pawn(Piece.Team.WHITE), 54);
-        board.setPiece(new Pawn(Piece.Team.WHITE), 53);
-        board.setPiece(new Pawn(Piece.Team.WHITE), 52);
-        board.setPiece(new Pawn(Piece.Team.WHITE), 51);
-        board.setPiece(new Pawn(Piece.Team.WHITE), 50);
-        board.setPiece(new Pawn(Piece.Team.WHITE), 49);
-        board.setPiece(new Pawn(Piece.Team.WHITE), 48);
-
+        cpm.defaltPieceSetting();
 
 
         int answer = 1;
@@ -50,56 +18,124 @@ public class Test {
         while (answer == 1) {
             board.printBoard();
             if (turn % 2 == 1) {
-
-                System.out.println("White turn, choose piece to move");
-                System.out.println("insert rank.");
-                int originRank = sc.nextInt();
-                System.out.println("insert file.");
-                int originFile = sc.nextInt();
-
-                Piece moveTarget = board.getPiece(originRank, originFile);
-                if ( moveTarget.team != Piece.Team.WHITE ||  moveTarget.team == null ) {
-                    System.out.println("illegal piece choose, choose another one");
-                    System.out.println("Team: " + moveTarget + ", R[" + originRank + "] F[" + originFile + "]");
-                    continue;
-                }
-                System.out.println("Team: " + moveTarget + ", R[" + originRank + "] F[" + originFile + "]");
-
-                System.out.println("insert move square");
-                System.out.println("insert rank.");
-                int movedRank = sc.nextInt();
-                System.out.println("insert file.");
-                int movedFile = sc.nextInt();
-                rule.movePiece(board.toIndex(originRank, originFile),
-                        board.toIndex(movedRank, movedFile));// Rule 클래스의 canMove를 이용한 것으로 바꿀것
+                cpm.halfMoveProgress(Piece.Team.WHITE);
 
             } else {
-
-                System.out.println("Black turn, choose piece to move");
-                System.out.println("insert rank.");
-                int originRank = sc.nextInt();
-                System.out.println("insert file.");
-                int originFile = sc.nextInt();
-
-                Piece moveTarget = board.getPiece(originRank, originFile);
-                if( moveTarget.team != Piece.Team.BLACK ||  moveTarget.team == null ) {
-                    System.out.println("illegal piece choose, choose another one");
-                    break;
-                }
-                System.out.println("Team: " + moveTarget + ", R[" + originRank + "] F[" + originFile + "]");
-
-                System.out.println("insert move square");
-                System.out.println("insert rank.");
-                int movedRank = sc.nextInt();
-                System.out.println("insert file.");
-                int movedFile = sc.nextInt();
-                rule.movePiece(board.toIndex(originRank, originFile),
-                        board.toIndex(movedRank, movedFile));// Rule 클래스의 canMove를 이용한 것으로 바꿀것
-
+                cpm.halfMoveProgress(Piece.Team.BLACK);
             }
             turn ++;
 
         }
     }
 
+}
+
+class ChessProgressManager {
+    Board board;
+    Rule rule;
+    Scanner sc;
+
+    void placeNewPieceFactory(char name , Piece.Team team, int loc) {
+        Piece newPiece;
+
+        switch (name) { // 후에 enum으로 개선
+            case 'P' -> newPiece = new Pawn(team, loc);
+            case 'B' -> newPiece = new Bishop(team, loc);
+            case 'N' -> newPiece = new Knight(team, loc);
+            case 'R' -> newPiece = new Rook(team, loc);
+            case 'Q' -> newPiece = new Queen(team, loc);
+            case 'K' -> newPiece = new King(team, loc);
+
+            default -> throw new IllegalStateException("Unexpected value: " + name);
+        }
+        newPiece.setLoc(loc);
+        board.setPiece(newPiece, loc);
+    }
+
+    void defaltPieceSetting () {
+        placeNewPieceFactory('P', Piece.Team.BLACK, board.toIndex(1, 0));
+        placeNewPieceFactory('P', Piece.Team.BLACK, board.toIndex(1, 1));
+        placeNewPieceFactory('P', Piece.Team.BLACK, board.toIndex(1, 2));
+        placeNewPieceFactory('P', Piece.Team.BLACK, board.toIndex(1, 3));
+        placeNewPieceFactory('P', Piece.Team.BLACK, board.toIndex(1, 4));
+        placeNewPieceFactory('P', Piece.Team.BLACK, board.toIndex(1, 5));
+        placeNewPieceFactory('P', Piece.Team.BLACK, board.toIndex(1, 6));
+        placeNewPieceFactory('P', Piece.Team.BLACK, board.toIndex(1, 7));
+
+        placeNewPieceFactory('R', Piece.Team.BLACK, board.toIndex(0, 0));
+        placeNewPieceFactory('N', Piece.Team.BLACK, board.toIndex(0, 1));
+        placeNewPieceFactory('B', Piece.Team.BLACK, board.toIndex(0, 2));
+        placeNewPieceFactory('Q', Piece.Team.BLACK, board.toIndex(0, 3));
+        placeNewPieceFactory('K', Piece.Team.BLACK, board.toIndex(0, 4));
+        placeNewPieceFactory('B', Piece.Team.BLACK, board.toIndex(0, 5));
+        placeNewPieceFactory('N', Piece.Team.BLACK, board.toIndex(0, 6));
+        placeNewPieceFactory('R', Piece.Team.BLACK, board.toIndex(0, 7));
+
+        placeNewPieceFactory('P', Piece.Team.WHITE, board.toIndex(6, 0));
+        placeNewPieceFactory('P', Piece.Team.WHITE, board.toIndex(6, 1));
+        placeNewPieceFactory('P', Piece.Team.WHITE, board.toIndex(6, 2));
+        placeNewPieceFactory('P', Piece.Team.WHITE, board.toIndex(6, 3));
+        placeNewPieceFactory('P', Piece.Team.WHITE, board.toIndex(6, 4));
+        placeNewPieceFactory('P', Piece.Team.WHITE, board.toIndex(6, 5));
+        placeNewPieceFactory('P', Piece.Team.WHITE, board.toIndex(6, 6));
+
+        placeNewPieceFactory('P', Piece.Team.WHITE, board.toIndex(6, 7));
+        placeNewPieceFactory('R', Piece.Team.WHITE, board.toIndex(7, 0));
+        placeNewPieceFactory('N', Piece.Team.WHITE, board.toIndex(7, 1));
+        placeNewPieceFactory('B', Piece.Team.WHITE, board.toIndex(7, 2));
+        placeNewPieceFactory('Q', Piece.Team.WHITE, board.toIndex(7, 3));
+        placeNewPieceFactory('K', Piece.Team.WHITE, board.toIndex(7, 4));
+        placeNewPieceFactory('B', Piece.Team.WHITE, board.toIndex(7, 5));
+        placeNewPieceFactory('N', Piece.Team.WHITE, board.toIndex(7, 6));
+        placeNewPieceFactory('R', Piece.Team.WHITE, board.toIndex(7, 7));
+    }
+    ChessProgressManager (Board board, Rule rule, Scanner sc) {
+        this.board = board;
+        this.rule = rule;
+        this.sc = sc;
+    }
+
+    void halfMoveProgress (Piece.Team team) {
+
+        System.out.println(team.name() + " turn");// piece 선택
+        System.out.println("insert piece's rank.");
+        int originRank = sc.nextInt() - 1;
+        System.out.println("insert piece's file.");
+        int originFile = sc.nextInt() - 1;
+
+        Piece moveTarget = board.getPiece(originRank, originFile);
+        if ( moveTarget.team != team ||  moveTarget.team == null ) { // 고른 piece가 합법적인지 확인
+            System.out.println("illegal piece choose, choose another one");
+            System.out.println("Team: " + moveTarget + ", R[" + originRank + "] F[" + originFile + "]");
+
+            halfMoveProgress(team);
+
+        } else {
+
+            System.out.println("Team: " + moveTarget + ", R[" + originRank + "] F[" + originFile + "]");
+
+            System.out.println("insert square where you go");// 움직일 곳 정하기
+            System.out.println("insert rank.");
+            int movedRank = sc.nextInt() - 1;
+            System.out.println("insert file.");
+            int movedFile = sc.nextInt() - 1;
+
+            int movedIndex = board.toIndex(movedRank, movedFile);
+            movePiece(movedIndex, board.getPiece(originRank, originFile));
+        }
+    }
+
+    void movePiece (int location, Piece p){
+        if( rule.canMove(p, location) ) {
+            System.out.println("from " + p.getLoc()+ ", to " + location);
+
+            board.setPiece(p, location);
+            board.setPiece(new Empty(), p.getLoc());
+            p.setLoc(location);
+
+        } else {
+                System.out.println("You can't move from" + board.toRank(p.getLoc()) + ", " + board.toFile(p.getLoc())+
+                        " to " + board.toRank(location) + ", " + board.toFile(location));
+        }
+    }
 }

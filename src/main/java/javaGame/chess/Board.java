@@ -2,8 +2,8 @@ package javaGame.chess;
 
 public class Board {
     private Piece[] pieces;
-    public final int RANK_SIZE = 8; // 가로
-    public final int FILE_SIZE = 8; // 세로
+    public static final int RANK_SIZE = 8; // 가로
+    public static final int FILE_SIZE = 8; // 세로
 
     public Board(){
         pieces = new Piece[ RANK_SIZE * FILE_SIZE ];
@@ -49,16 +49,16 @@ public class Board {
         }
     }
 
-    int toIndex(int rank, int file) {
+    public static int toIndex(int rank, int file) {
         if (rank >= RANK_SIZE || rank < 0) throw new RuntimeException() ;
         if (file >= FILE_SIZE || file < 0) throw new RuntimeException();
         return rank * FILE_SIZE + file;
     }
 
-    public int toRank (int index) {
+    public static int toRank (int index) {
         return index / FILE_SIZE;
     }
-    public int toFile (int index) {
+    public static int toFile (int index) {
         return index % FILE_SIZE;
     }
 }

@@ -9,61 +9,69 @@ public class Rule {
         this.board = board;
     }
 
-    void movePiece(int originLoc, int movedLoc) {
-        System.out.println("from " + originLoc+ ", to " + movedLoc);
-        if (canMove(originLoc, movedLoc)) {
-            board.setPiece(board.getPiece(originLoc), movedLoc);
-            board.setPiece(new Empty(), originLoc);
-        } else {
-            System.out.println("You can't move from" + board.toRank(originLoc) + ", " + board.toFile(originLoc)+
-                    " to " + board.toRank(movedLoc) + ", " + board.toFile(movedLoc));
-        }
-    }
+    boolean canMove(Piece piece, int movedLoc) {
 
-    boolean canMove(int originLoc, int movedLoc) {
-
-        Piece piece = board.getPiece(originLoc);
-
-        int pieceRankDistance = Piece.GET_DISTANCE(board.toRank(originLoc), board.toRank(movedLoc));
-        int pieceFileDistance = Piece.GET_DISTANCE(board.toFile(originLoc), board.toFile(movedLoc));
-
-        if (!piece.isLegalMove (pieceRankDistance, pieceFileDistance)) {
-            System.out.println("It is illegal move!");
+        if (!piece.isLegalMove (movedLoc)) {
+            System.out.println("It is illegal move");
             return false;
         }
-        else if (isMoveBlocked (originLoc, movedLoc)) {
+        else if (isMoveBlocked (piece.getLoc(), movedLoc)) {
             System.out.println("Your piece is blocked by --");
             return false;
         }
         return true;
     }
 
-    LinkedList<Piece> getThreatingPieces(int location) {
-
-        LinkedList<Piece> threatingPieces = new LinkedList<Piece>();
-
-        for (int tempLoc = 0 ; tempLoc < board.getPieces().length ; tempLoc++) {
-
-            Piece temp = board.getPiece(tempLoc);
-
-            int rankDistance = Piece.GET_DISTANCE(board.toRank(tempLoc), board.toRank(location) );
-            int fileDistance = Piece.GET_DISTANCE(board.toFile(tempLoc), board.toFile(location) );
-
-            if( temp.isLegalMove (rankDistance, fileDistance)
-                    && !isMoveBlocked ( tempLoc, location ) )
-
-                threatingPieces.add(temp);
-        }
-
-        return threatingPieces;
+    boolean isMoveBlocked(int originLoc, int movedLoc) { //getBlockingPieces완성후 교체
+        return (getBlockingPiece(originLoc, movedLoc) instanceof Empty) ? false : true;
     }
+    LinkedList<Piece> getBlockingPieces(int orginLoc, int targetLoc) {
+        LinkedList<Piece> blockingPieces = new LinkedList<Piece>();
 
-    boolean isMoveBlocked(int orginLoc, int movedLoc) {
+        int originRank = board.toRank(orginLoc);
+        int targetRank = board.toRank(targetLoc);
+        int rMoveDistance = (originRank > targetRank) ? -1 :
+                (originRank < targetRank) ? 1 : 0;
 
-        Piece piece = board.getPiece( board.toRank(orginLoc), board.toFile(orginLoc) );
-        // movingPiece와 도착지점 사이에 움직임을 가로막는 기물이 있는가?
-        // 위의 내용 반환
-        return false;
+        int originFile = board.toFile(orginLoc);
+        int targetFile = board.toFile(targetLoc);
+        int fMoveDistance = (originFile > targetFile) ? -1 :
+                (originFile < targetFile) ? 1 : 0;
+
+        int tempPieceRank = originRank;
+        int tempPieceFile = originFile;
+        do{
+            tempPieceRank += rMoveDistance;
+            tempPieceFile += fMoveDistance;
+
+            Piece temp = board.getPiece(targetRank, tempPieceFile);
+            if(temp != null) blockingPieces.add(temp);
+        } while (tempPieceRank != targetRank
+                && tempPieceFile != targetFile);
+
+        return blockingPieces;
+    }
+    Piece getBlockingPiece(int orginLoc, int targetLoc) {
+
+        int originRank = board.toRank(orginLoc);
+        int targetRank = board.toRank(targetLoc);
+        int rMoveDistance = (originRank > targetRank) ? -1 :
+                (originRank < targetRank) ? 1 : 0;
+
+        int originFile = board.toFile(orginLoc);
+        int targetFile = board.toFile(targetLoc);
+        int fMoveDistance = (originFile > targetFile) ? -1 :
+                (originFile < targetFile) ? 1 : 0;
+        do{
+            originRank += rMoveDistance;
+            originFile += fMoveDistance;
+
+            Piece temp = board.getPiece(targetRank, originFile);
+            if(temp != null) return temp;
+        } while (originRank != targetRank
+                && originFile != targetFile);
+
+            return new Empty();
     }
 
 

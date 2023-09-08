@@ -5,11 +5,10 @@ public class Board {
     public static final int RANK_SIZE = 8; // 가로
     public static final int FILE_SIZE = 8; // 세로
 
+    final char emptySymbol = '+';
+
     public Board(){
         pieces = new Piece[ RANK_SIZE * FILE_SIZE ];
-        for (int i = 0; i < pieces.length ; i++) {
-            pieces[i] = new Empty();
-        }
     }
 
     public Piece[] getPieces() {
@@ -42,7 +41,7 @@ public class Board {
             for (int j = 0 ; j < FILE_SIZE ; j++) {
                 //System.out.println("i = " + i + ", j = " + j + ", index = " + toIndex(i, j) );
                 piece = pieces[toIndex(i, j)];
-                System.out.print(piece.getSymbol());
+                System.out.print( (piece != null) ? piece.getSymbol() : emptySymbol );
             }
 
             System.out.println();

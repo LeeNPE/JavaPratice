@@ -1,5 +1,5 @@
 package javaGame.chess;
-public abstract class Piece {
+public class Piece {
 
     private int location;
 
@@ -7,33 +7,45 @@ public abstract class Piece {
 
     Team team;
 
-    Piece (Team team, int location) {
+    public enum Type{
+        PAWN,
+        BISHOP,
+        KNIGHT,
+        ROOK,
+        QUEEN,
+        KING
+    }
+    Type type;
+
+    Piece (Team team, int location, Type type) {
+
         this.team = team;
         setLoc(location);
+        this.type = type;
     }
-
-    boolean isLegalMove (int moveLoc){
-        int rMoveDistance = getDistance(Board.toRank(location), Board.toRank(moveLoc)); //수정필요
-        int fMoveDistance = getDistance(Board.toFile(location), Board.toFile(moveLoc));
-        return isCorrectPieceMove(rMoveDistance, fMoveDistance);
-    }
-    abstract boolean isCorrectPieceMove(int rMoveDistance, int fMoveDistance);
-
 
     int getLoc () {return location;}
     void setLoc(int location) {
         this.location = location;
     }
 
-    static int getDistance (int origin, int moved) {
-        return Math.abs(origin - moved);
+    public char getSymbol() {
+        char symbol;
+        switch (type) {
+            case PAWN -> symbol = 'P';
+            case BISHOP -> symbol = 'B';
+            case KNIGHT -> symbol = 'N';
+            case ROOK -> symbol = 'R';
+            case QUEEN -> symbol = 'Q';
+            case KING -> symbol = 'K';
+            default -> symbol = 'O';
+        }
+        return symbol;
     }
-
-    public abstract char getSymbol();
     @Override
     public String toString() {
         return "Piece{" +
-                "team=" + team + ", " + getClass().toString() +
+                "team=" + team + ", " + type +
                 '}';
     }
 }
